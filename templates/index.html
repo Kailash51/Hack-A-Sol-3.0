@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hills to Highways</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <img src="{{ url_for('static', filename='Hack_logo.jpg') }}" alt="Logo" />
+      <h1>Hills to Highways</h1>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3>Hot Lines</h3>
+      <div class="box" id="road-recommendation">
+        <p id="repair-message" style="color: red; font-weight: bold"></p>
+      </div>
+
+      <h3>Population</h3>
+      <div class="box" id="population-box">
+        <p>
+          Current population: <span id="current-population">Fetching...</span>
+        </p>
+      </div>
+
+      <h3>Traffic</h3>
+      <div class="box" id="traffic-box">
+        <p>Traffic Level: <span id="traffic-level">Fetching...</span></p>
+      </div>
+    </div>
+
+    <main>
+      <marquee>Welcome to Hills to Highways</marquee>
+      <h2>Road Connectivity Prediction</h2>
+
+      <!-- Dropdown menus -->
+      <form method="POST" action="/predict">
+        <label for="rural_area">Select Rural Area:</label>
+        <select name="rural_area" id="rural_area" required>
+          <option value="" disabled selected>Select...</option>
+          {% for area in rural_areas %}
+          <option value="{{ area }}">{{ area }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="hilly_area">Select Hilly Area:</label>
+        <select name="hilly_area" id="hilly_area" required>
+          <option value="" disabled selected>Select...</option>
+          {% for area in hilly_areas %}
+          <option value="{{ area }}">{{ area }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit">Predict</button>
+      </form>
+
+      <h2 class="map">Map View</h2>
+      <div class="direction">
+        <p>From Latitude: <input type="text" id="from_latitude" /></p>
+        <p>From Longitude: <input type="text" id="from_longitude" /></p>
+        <p>To Latitude: <input type="text" id="to_latitude" /></p>
+        <p>To Longitude: <input type="text" id="to_longitude" /></p>
+        <button onclick="calculateDistance()">Submit Coordinates</button>
+      </div>
+
+      <div id="map" style="height: 300px; width: 100%"></div>
+      <div id="distanceOutput"></div>
+    </main>
+
+    <!-- Load the Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBST97YDLnIfTxZOkW8cJEEqsyUBRkiGGg&libraries=geometry"></script>
+
+    <script>
+      let map;
+
+      // Initialize map and fetch data when the page loads
+      function initPage() {
+        initMap();
+        fetchData();
+      }
+
+      // Initialize map with a default center
+      function initMap() {
+        // Set default location (e.g., New York)
+        const defaultLocation = { lat: 40.7128, lng: -74.006 };
+
+        // Initialize the map with default options
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: defaultLocation,
+          zoom: 10,
+        });
+      }
+
+      // Fetch data for sidebar
+      function fetchData() {
+        const data = {
+          population: 5500,
+          traffic: "High",
+          area: "Downtown",
+          trafficVolume: 1200,
+          populationGrowth: 6.5,
+        };
+
+        // Update population
+        document.getElementById("current-population").textContent =
+          data.population;
+
+        // Update traffic level
+        document.getElementById("traffic-level").textContent = data.traffic;
+
+        // Check for urgent repair condition
+        if (data.trafficVolume > 1000 && data.populationGrowth > 5) {
+          document.getElementById(
+            "repair-message"
+          ).textContent = `Urgent: ${data.area} road needs repair!`;
+        } else {
+          document.getElementById("repair-message").textContent = "";
+        }
+      }
+
+      // Calculate distance between two points
+      function calculateDistance() {
+        const fromLat = parseFloat(
+          document.getElementById("from_latitude").value
+        );
+        const fromLon = parseFloat(
+          document.getElementById("from_longitude").value
+        );
+        const toLat = parseFloat(document.getElementById("to_latitude").value);
+        const toLon = parseFloat(document.getElementById("to_longitude").value);
+
+        if (isNaN(fromLat) || isNaN(fromLon) || isNaN(toLat) || isNaN(toLon)) {
+          alert("Please enter valid coordinates.");
+          return;
+        }
+
+        const from = new google.maps.LatLng(fromLat, fromLon);
+        const to = new google.maps.LatLng(toLat, toLon);
+
+        // Calculate distance between two points
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+          from,
+          to
+        );
+        document.getElementById("distanceOutput").innerHTML =
+          "Distance: " + (distance / 1000).toFixed(2) + " km";
+
+        // Re-center the map to fit both markers
+        const bounds = new google.maps.LatLngBounds();
+        bounds.extend(from);
+        bounds.extend(to);
+        map.fitBounds(bounds);
+
+        // Add markers to map
+        const markerFrom = new google.maps.Marker({
+          position: from,
+          map: map,
+          title: "From",
+        });
+
+        const markerTo = new google.maps.Marker({
+          position: to,
+          map: map,
+          title: "To",
+        });
+      }
+
+      // Load map and fetch data when the page is loaded
+      window.onload = initPage;
+    </script>
+  </body>
+</html>

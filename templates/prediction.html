@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prediction Result</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <img src="{{ url_for('static', filename='Hack_logo.jpg') }}" alt="Logo" />
+      <h1>Hills to Highways</h1>
+    </nav>
+
+    <main>
+      <h2>Prediction Result for {{ rural_area }} and {{ hilly_area }}</h2>
+
+      {% if connectivity_possible %}
+      <p style="color: rgb(60, 182, 23); font-weight: bold">
+        Connectivity is possible between these areas!
+      </p>
+      <h3>Cost Optimization Plan:</h3>
+      <ul>
+        <li>Material Cost: {{ cost_plan['material'] }}</li>
+        <li>Labour Cost: {{ cost_plan['labour'] }}</li>
+        <li>Maintenance Cost: {{ cost_plan['maintenance'] }}</li>
+      </ul>
+      {% else %}
+      <p>Connectivity is not feasible between these areas.</p>
+      {% endif %}
+    </main>
+  </body>
+</html>
