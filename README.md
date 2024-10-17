@@ -27,8 +27,6 @@ To get started with Hack-A-Sol 3.0, follow these steps:
    ```bash
    git clone https://github.com/Kailash51/Hack-A-Sol-3.0.git
 
-   git clone https://github.com/Kailash51/Hack-A-Sol-3.0.git
-
 2. Navigate to the project directory
 
 cd Hack-A-Sol-3.0
