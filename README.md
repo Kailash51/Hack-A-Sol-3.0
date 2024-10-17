@@ -1,7 +1,7 @@
 # Hack-A-Sol-3.0
 A 30 hours innovation challenges
 
-Check out the live demo of the project here: [Hack-A-Sol 3.0 Live](https://hack-a-sol-3-0-9dsj.onrender.com)
+
 
 ## Features
 
