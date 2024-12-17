@@ -8,6 +8,169 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
     />
+    <style>
+      /* Modern UI Enhancements */
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+      }
+
+      nav {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar {
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-right: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar h3 {
+        color: #1e3c72;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(30, 60, 114, 0.1);
+      }
+
+      .sidebar .box {
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .sidebar .box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border-color: rgba(30, 60, 114, 0.2);
+      }
+
+      .sidebar .box p {
+        margin: 0;
+        color: #4a5568;
+        font-size: 0.95rem;
+      }
+
+      .sidebar .box span {
+        font-weight: 600;
+        color: #2d3748;
+        margin-left: 0.5rem;
+      }
+
+      #repair-message {
+        color: #e53e3e !important;
+        font-weight: 600;
+        padding: 0.5rem;
+        border-radius: 6px;
+        background: rgba(229, 62, 62, 0.1);
+        border-left: 3px solid #e53e3e;
+        animation: blink 2s infinite;
+      }
+
+      /* Animation for fetching text */
+      .fetching {
+        animation: pulse 1.5s infinite;
+        opacity: 0.7;
+      }
+
+      /* Blinking animation for urgent message */
+      @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes pulse {
+        0% { opacity: 0.7; }
+        50% { opacity: 0.4; }
+        100% { opacity: 0.7; }
+      }
+
+      main {
+        padding: 2rem;
+      }
+
+      form {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      select {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s;
+        background: white;
+      }
+
+      select:hover {
+        border-color: #2a5298;
+      }
+
+      select:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 2px rgba(30, 60, 114, 0.2);
+        outline: none;
+      }
+
+      button {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .direction {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      #map {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      marquee {
+        
+        padding: 10px;
+        border-radius: 8px;
+        color: #ff3333;
+        
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      h2 {
+        color: #1e3c72;
+        margin: 2rem 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"] {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 2px rgba(30, 60, 114, 0.2);
+        outline: none;
+      }
+    </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -18,21 +181,21 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <h3>Hot Lines</h3>
+      <h3>🚨 Hot Lines</h3>
       <div class="box" id="road-recommendation">
-        <p id="repair-message" style="color: red; font-weight: bold"></p>
+        <p id="repair-message"></p>
       </div>
 
-      <h3>Population</h3>
+      <h3>👥 Population</h3>
       <div class="box" id="population-box">
         <p>
-          Current population: <span id="current-population">Fetching...</span>
+          Current population: <span id="current-population" class="fetching">Fetching...</span>
         </p>
       </div>
 
-      <h3>Traffic</h3>
+      <h3>🚦 Traffic</h3>
       <div class="box" id="traffic-box">
-        <p>Traffic Level: <span id="traffic-level">Fetching...</span></p>
+        <p>Traffic Level: <span id="traffic-level" class="fetching">Fetching...</span></p>
       </div>
     </div>
 
@@ -99,7 +262,7 @@
         const data = {
           population: 5500,
           traffic: "High",
-          area: "Downtown",
+          area: "Kangra",
           trafficVolume: 1200,
           populationGrowth: 6.5,
         };
